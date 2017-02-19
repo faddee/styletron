@@ -10,7 +10,7 @@ test('test injection', t => {
       return decls.length;
     }
   };
-  const classString = injectStyle(spy, {
+  const classString = injectStyle(spy)({
     color: 'red',
     backgroundColor: 'blue',
     '@media (max-width: 500px)': {
@@ -38,7 +38,7 @@ test('test injection array', function (t) {
       return decls.length;
     }
   };
-  const classString = injectStyle(spy, {
+  const classString = injectStyle(spy)({
     color: ['red', 'blue'],
     '@media (max-width: 500px)': {
       color: ['purple', 'orange'],
@@ -67,7 +67,7 @@ test('test injection prefixed', function (t) {
       return decls.length;
     }
   };
-  const classString = injectStylePrefixed(spy, {
+  const classString = injectStylePrefixed(spy)({
     width: 'calc(100%)',
     height: ['min-content', 'calc(50%)'],
     boxSizing: 'border-box'
