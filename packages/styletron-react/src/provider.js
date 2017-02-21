@@ -14,18 +14,17 @@ const React = require('react');
  *     </StyletronProvider>
  *   );
  * }
- * 
+ *
  * @property {object} styletron - Styletron instance
  * @property {ReactElement} children - children
  * @extends ReactClass
  */
 class StyletronProvider extends React.Component {
   getChildContext() {
-    return {styletron: this.styletron};
+    return {injectStyle: this.props.injectStyle};
   }
   constructor(props, context) {
     super(props, context);
-    this.styletron = props.styletron;
   }
   render() {
     return React.Children.only(this.props.children);
@@ -33,12 +32,12 @@ class StyletronProvider extends React.Component {
 }
 
 StyletronProvider.PropTypes = {
-  styletron: React.PropTypes.object.isRequired,
+  injectStyle: React.PropTypes.func.isRequired,
   children: React.PropTypes.element.isRequired
 };
 
 StyletronProvider.childContextTypes = {
-  styletron: React.PropTypes.object.isRequired
+  injectStyle: React.PropTypes.func.isRequired
 };
 
 module.exports = StyletronProvider;
