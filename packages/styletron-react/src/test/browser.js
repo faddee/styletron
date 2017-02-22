@@ -6,11 +6,12 @@ const {injectStyle} = require('styletron-utils');
 
 const styled = require('../styled');
 const Provider = require('../provider');
+const FeaturedProvider = require('../featured-provider');
 
 test('provider provides function', t => {
   const func = () => true;
   const MockComponent = (props, context) => {
-    t.equal(context.injectStyle, func, 'styletron instance override provided');
+    t.equal(context.injectStyle, func, 'inject style function provided');
     return React.createElement('div');
   };
   MockComponent.contextTypes = {injectStyle: React.PropTypes.func};
@@ -18,6 +19,21 @@ test('provider provides function', t => {
     React.createElement(Provider, {injectStyle: func},
       React.createElement(MockComponent))
   );
+  t.end();
+});
+
+test('featured provider applies styles', t => {
+  const Widget = styled('div', () => {
+    return {color: 'red'};
+  });
+  const styletron = new Styletron();
+  const output = ReactTestUtils.renderIntoDocument(
+    React.createElement(FeaturedProvider, {styletron},
+      React.createElement(Widget))
+  );
+  const div = ReactTestUtils.findRenderedDOMComponentWithTag(output, 'div');
+  t.equal(div.className, 'a', 'styletron classes');
+  t.equal(styletron.getCss(), '.a{color:red}');
   t.end();
 });
 
