@@ -22,6 +22,11 @@ test('provider provides function', t => {
   t.end();
 });
 
+test('provider throws when passing styletron instance', t => {
+  t.plan(1);
+  t.throws(() => ReactTestUtils.renderIntoDocument(React.createElement(Provider, {styletron: {}})), /styletron-react\/featured/);
+});
+
 test('featured provider applies styles', t => {
   const Widget = styled('div', () => {
     return {color: 'red'};
