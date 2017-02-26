@@ -19,14 +19,14 @@ const React = require('react');
  * @property {ReactElement} children - children
  * @extends ReactClass
  */
-function createProvider(getInjectStyle, PropTypes) {
+function createProvider(childContext, PropTypes) {
   class StyletronProvider extends React.Component {
     getChildContext() {
-      return {injectStyle: this.injectStyle};
+      return this.childContext;
     }
-    constructor(props, context) {
-      super(props, context);
-      this.injectStyle = getInjectStyle(props);
+    constructor(props) {
+      super(props);
+      this.childContext = childContext(props);
     }
     render() {
       return React.Children.only(this.props.children);
@@ -36,7 +36,8 @@ function createProvider(getInjectStyle, PropTypes) {
   StyletronProvider.PropTypes = PropTypes;
 
   StyletronProvider.childContextTypes = {
-    injectStyle: React.PropTypes.func.isRequired
+    styletron: React.PropTypes.object,
+    injectStyle: React.PropTypes.func
   };
 
   return StyletronProvider;

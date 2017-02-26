@@ -8,23 +8,51 @@ const styled = require('../styled');
 const Provider = require('../provider');
 const FeaturedProvider = require('../featured-provider');
 
-test('provider provides function', t => {
-  const func = () => true;
+test('provider provides instance and function', t => {
+  const mockInstance = {};
+  const mockFunc = () => true;
   const MockComponent = (props, context) => {
-    t.equal(context.injectStyle, func, 'inject style function provided');
+    t.equal(context.styletron, mockInstance, 'styletron instance provided');
+    t.equal(context.injectStyle, mockFunc, 'inject style function provided');
     return React.createElement('div');
   };
-  MockComponent.contextTypes = {injectStyle: React.PropTypes.func};
+  MockComponent.contextTypes = {
+    styletron: React.PropTypes.object,
+    injectStyle: React.PropTypes.func
+  };
   ReactTestUtils.renderIntoDocument(
-    React.createElement(Provider, {injectStyle: func},
+    React.createElement(Provider, {styletron: mockInstance, injectStyle: mockFunc},
       React.createElement(MockComponent))
   );
   t.end();
 });
 
-test('provider throws when passing styletron instance', t => {
+test('provider overrides function', t => {
+  const mockInstance = {};
+  const mockFunc1 = () => true;
+  const mockFunc2 = () => true;
+  const MockComponent = (props, context) => {
+    t.equal(context.styletron, mockInstance, 'styletron instance passed');
+    t.equal(context.injectStyle, mockFunc2, 'inject style function overrided');
+    return React.createElement('div');
+  };
+  MockComponent.contextTypes = {
+    styletron: React.PropTypes.object,
+    injectStyle: React.PropTypes.func
+  };
+  ReactTestUtils.renderIntoDocument(
+    React.createElement(Provider, {styletron: mockInstance, injectStyle: mockFunc1},
+      React.createElement(Provider, {injectStyle: mockFunc2},
+        React.createElement(MockComponent)))
+  );
+  t.end();
+});
+
+test('provider throws when only passing instance', t => {
   t.plan(1);
-  t.throws(() => ReactTestUtils.renderIntoDocument(React.createElement(Provider, {styletron: {}})), /styletron-react\/featured/);
+  t.throws(() => ReactTestUtils.renderIntoDocument(
+    React.createElement(Provider, {styletron: {}},
+      React.createElement('div'))), /styletron-react\/featured/);
 });
 
 test('featured provider applies styles', t => {
@@ -53,7 +81,7 @@ test('props passed to styled function', t => {
   });
   const styletron = new Styletron();
   ReactTestUtils.renderIntoDocument(
-    React.createElement(Provider, {injectStyle: injectStyle(styletron)},
+    React.createElement(Provider, {styletron, injectStyle},
       React.createElement(Widget, mockProps))
   );
 });
@@ -64,7 +92,7 @@ test('styled applies styles', t => {
   });
   const styletron = new Styletron();
   const output = ReactTestUtils.renderIntoDocument(
-    React.createElement(Provider, {injectStyle: injectStyle(styletron)},
+    React.createElement(Provider, {styletron, injectStyle},
       React.createElement(Widget))
   );
   const div = ReactTestUtils.findRenderedDOMComponentWithTag(output, 'div');
@@ -77,7 +105,7 @@ test('styled applies static styles', t => {
   const Widget = styled('div', {color: 'red'});
   const styletron = new Styletron();
   const output = ReactTestUtils.renderIntoDocument(
-    React.createElement(Provider, {injectStyle: injectStyle(styletron)},
+    React.createElement(Provider, {styletron, injectStyle},
       React.createElement(Widget))
   );
   const div = ReactTestUtils.findRenderedDOMComponentWithTag(output, 'div');
@@ -90,7 +118,7 @@ test('styled passes through valid props', t => {
   const Widget = styled('div', {color: 'red'});
   const styletron = new Styletron();
   const output = ReactTestUtils.renderIntoDocument(
-    React.createElement(Provider, {injectStyle: injectStyle(styletron)},
+    React.createElement(Provider, {styletron, injectStyle},
       React.createElement(Widget, {'data-bar': 'bar'}))
   );
   const div = ReactTestUtils.findRenderedDOMComponentWithTag(output, 'div');
@@ -103,7 +131,7 @@ test('styled composition', t => {
   const SuperWidget = styled(Widget, {display: 'block', background: 'black'});
   const styletron = new Styletron();
   const output = ReactTestUtils.renderIntoDocument(
-    React.createElement(Provider, {injectStyle: injectStyle(styletron)},
+    React.createElement(Provider, {styletron, injectStyle},
       React.createElement(SuperWidget))
   );
   const div = ReactTestUtils.findRenderedDOMComponentWithTag(output, 'div');
@@ -117,7 +145,7 @@ test('styled component', t => {
   const SuperWidget = styled(Widget, {color: 'red'});
   const styletron = new Styletron();
   const output = ReactTestUtils.renderIntoDocument(
-    React.createElement(Provider, {injectStyle: injectStyle(styletron)},
+    React.createElement(Provider, {styletron, injectStyle},
       React.createElement(SuperWidget))
   );
   const div = ReactTestUtils.findRenderedDOMComponentWithTag(output, 'div');
@@ -145,7 +173,7 @@ test('innerRef works', t => {
   }
 
   ReactTestUtils.renderIntoDocument(
-    React.createElement(Provider, {injectStyle: injectStyle(styletron)},
+    React.createElement(Provider, {styletron, injectStyle},
       React.createElement(TestComponent))
   );
 });
@@ -185,7 +213,7 @@ test('innerRef not passed', t => {
   }
 
   ReactTestUtils.renderIntoDocument(
-    React.createElement(Provider, {injectStyle: injectStyle(styletron)},
+    React.createElement(Provider, {styletron, injectStyle},
       React.createElement(TestComponent))
   );
 });

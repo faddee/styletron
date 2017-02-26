@@ -12,7 +12,7 @@ function createInjectStyle(plugins, ...customMiddlewares) {
     pseudoMiddleware
   ];
 
-  return styletron => (styles, media, pseudo) => {
+  return (styletron, styles, media, pseudo) => {
     const resolve = (prop, val, media, pseudo) => {
       if (typeof val === 'string' || typeof val === 'number') {
         return ' ' + styletron.injectDeclaration({prop: hyphenate(prop), val, media, pseudo});

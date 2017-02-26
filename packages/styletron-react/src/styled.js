@@ -76,7 +76,12 @@ function createStyledElementComponent(tagName, stylesArray) {
         }
       });
 
-      const styletronClassName = this.context.injectStyle(resolvedStyle);
+      const {
+        styletron,
+        injectStyle
+      } = this.context;
+
+      const styletronClassName = injectStyle(styletron, resolvedStyle);
 
       const elementProps = typeof StyledElement[TAG_KEY] === 'string' ? omitInvalidProps(restProps) : restProps;
       elementProps.className = restProps.className
@@ -93,7 +98,10 @@ function createStyledElementComponent(tagName, stylesArray) {
 
   StyledElement[TAG_KEY] = tagName;
   StyledElement[STYLES_KEY] = stylesArray;
-  StyledElement.contextTypes = {injectStyle: React.PropTypes.func};
+  StyledElement.contextTypes = {
+    styletron: React.PropTypes.object.isRequired,
+    injectStyle: React.PropTypes.func.isRequired
+  };
 
   return StyledElement;
 }

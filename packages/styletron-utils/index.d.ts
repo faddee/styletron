@@ -2,13 +2,12 @@ import StyletronServer from "styletron-server";
 import StyletronClient from "styletron-client";
 
 declare namespace StyletronUtils {
-  type InjectStyle = (styles: Object, media?: string, pseudo?: string) => string;
-  type StyletronInjectStyle = (styletron: StyletronServer | StyletronClient) => InjectStyle;
-  type CreateInjectStyle = (plugins?: (styles: Object) => Object, ...middlewares: Function[]) => StyletronInjectStyle;
+  type InjectStyle = (styletron: StyletronServer | StyletronClient, styles: Object, media?: string, pseudo?: string) => string;
+  type CreateInjectStyle = (plugins?: (styles: Object) => Object, ...middlewares: Function[]) => InjectStyle;
 
   export var createInjectStyle: CreateInjectStyle;
-  export var injectStyle: StyletronInjectStyle;
-  export var injectStylePrefixed: StyletronInjectStyle;
+  export var injectStyle: InjectStyle;
+  export var injectStylePrefixed: InjectStyle;
 }
 
 export = StyletronUtils;
