@@ -59,22 +59,19 @@ test('test injection array', function(t) {
   });
   t.equal(classString, '1 2 3 4 5 6');
   t.deepEqual(decls, [
-    {prop: 'color', val: 'red', media: undefined, pseudo: undefined},
-    {prop: 'color', val: 'blue', media: undefined, pseudo: undefined},
+    {prop: 'color', val: 'red;color:blue', media: undefined, pseudo: undefined},
     {
       prop: 'color',
-      val: 'purple',
+      val: 'purple;color:orange',
       media: '(max-width: 500px)',
       pseudo: undefined,
     },
     {
       prop: 'color',
-      val: 'orange',
-      media: '(max-width: 500px)',
-      pseudo: undefined,
+      val: 'green;color:yellow',
+      media: undefined,
+      pseudo: ':hover',
     },
-    {prop: 'color', val: 'green', media: undefined, pseudo: ':hover'},
-    {prop: 'color', val: 'yellow', media: undefined, pseudo: ':hover'},
   ]);
   t.end();
 });
@@ -92,43 +89,20 @@ test('test injection prefixed', function(t) {
     height: ['min-content', 'calc(50%)'],
     boxSizing: 'border-box',
   });
-  t.equal(classString, '1 2 3 4 5 6');
+  t.equal(classString, '1 2 3');
   t.deepEqual(decls, [
+    {media: undefined, prop: 'width', pseudo: undefined, val: 'calc(100%)'},
     {
-      prop: 'width',
-      val: 'calc(100%)',
       media: undefined,
-      pseudo: undefined,
-    },
-    {
       prop: 'height',
-      val: '-webkit-min-content',
-      media: undefined,
       pseudo: undefined,
+      val: '-webkit-min-content;height:-moz-min-content;height:min-content;height:calc(50%)',
     },
     {
-      prop: 'height',
-      val: '-moz-min-content',
       media: undefined,
-      pseudo: undefined,
-    },
-    {
-      prop: 'height',
-      val: 'min-content',
-      media: undefined,
-      pseudo: undefined,
-    },
-    {
-      prop: 'height',
-      val: 'calc(50%)',
-      media: undefined,
-      pseudo: undefined,
-    },
-    {
       prop: 'box-sizing',
-      val: 'border-box',
-      media: undefined,
       pseudo: undefined,
+      val: 'border-box',
     },
   ]);
   t.end();

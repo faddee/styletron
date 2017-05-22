@@ -16,18 +16,20 @@ export default function injectStyle(styletron, styles, media, pseudo) {
         });
       continue;
     }
-    if (Array.isArray(val)) {
-      for (let i = 0; i < val.length; i++) {
-        const hyphenated = hyphenate(key);
-        classString +=
-          ' ' +
-          styletron.injectDeclaration({
-            prop: hyphenated,
-            val: val[i],
-            media,
-            pseudo,
-          });
+    if (Array.isArray(val) && val.length > 0) {
+      let arrVal = val[0];
+      const hyphenated = hyphenate(key);
+      for (let i = 1; i < val.length; i++) {
+        arrVal += `;${hyphenated}:${val[i]}`;
       }
+      classString +=
+        ' ' +
+        styletron.injectDeclaration({
+          prop: hyphenated,
+          val: arrVal,
+          media,
+          pseudo,
+        });
       continue;
     }
     if (valType === 'object') {
